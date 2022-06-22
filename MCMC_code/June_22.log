@@ -1,0 +1,12 @@
+2022-06-22 16:27:25,076 INFO:start sampling, we did not use burn in. We will remove the burn-in step while producing the corner plot
+2022-06-22 16:28:14,696 INFO:Iteration finished with total sample Number24
+2022-06-22 16:28:42,201 INFO:Iteration finished with total sample Number48
+2022-06-22 16:29:09,672 INFO:Iteration finished with total sample Number72
+2022-06-22 16:29:37,431 INFO:Iteration finished with total sample Number96
+2022-06-22 16:30:00,775 INFO:Iteration finished with total sample Number120
+2022-06-22 16:30:26,773 INFO:Iteration finished with total sample Number144
+2022-06-22 16:30:54,989 INFO:Iteration finished with total sample Number168
+2022-06-22 16:31:26,749 INFO:Iteration finished with total sample Number192
+2022-06-22 16:31:51,186 INFO:Iteration finished with total sample Number216
+2022-06-22 16:32:15,630 INFO:Iteration finished with total sample Number240
+2022-06-22 16:32:45,814 INFO:Iteration finished with total sample Number264
