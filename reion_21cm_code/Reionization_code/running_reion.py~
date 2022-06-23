@@ -27,7 +27,7 @@ from start import Initialize
 
 class Redshift_Evolution(Initialize):
 
-	def __init__(self, MCMC_H0, MCMC_ombh2, MCMC_omch2, sigma_8, MCMC_ns, MCMC_lambda_0, MCMC_esc_PopIII, GPR_interpolator_PopII): # GPR_interpolator_PopII
+	def __init__(self, MCMC_H0, MCMC_ombh2, MCMC_omch2, sigma_8, MCMC_ns, MCMC_esc_PopIII, GPR_interpolator_PopII, MCMC_lambda_0): # GPR_interpolator_PopII
 		
 		
 		super(Redshift_Evolution, self).__init__(MCMC_H0, MCMC_ombh2, MCMC_omch2, sigma_8, MCMC_ns, GPR_interpolator_PopII, MCMC_esc_PopIII, MCMC_lambda_0, initial_call=True, zcoll=Z[0]) # GPR_interpolator_PopII
@@ -319,7 +319,7 @@ class Redshift_Evolution(Initialize):
 
 	def set_escfrac_evol_popII(self, z):
 		#redshift=z.reshape(1,-1)
-		mean_prediction, std_prediction = self.GPR_interpolator.predict(z.reshape(-1,1), return_std=True)
+		mean_prediction, std_prediction = self.GPR_initerpolator.predict(z.reshape(-1,1), return_std=True)
 		escfrac['PopII']['HII'], escfrac['PopII']['HeII'], escfrac['PopII']['HeIII']= mean_prediction, mean_prediction, mean_prediction
 		escfrac['PopIII']['HII'], escfrac['PopIII']['HeII'], escfrac['PopIII']['HeIII']= self.MCMC_esc_PopIII, self.MCMC_esc_PopIII, self.MCMC_esc_PopIII
 		return escfrac

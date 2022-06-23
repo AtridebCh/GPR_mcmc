@@ -27,7 +27,7 @@ from start import Initialize
 
 class Redshift_Evolution(Initialize):
 
-	def __init__(self, MCMC_H0, MCMC_ombh2, MCMC_omch2, sigma_8, MCMC_ns, MCMC_lambda_0, MCMC_esc_PopIII, GPR_interpolator_PopII): # GPR_interpolator_PopII
+	def __init__(self, MCMC_H0, MCMC_ombh2, MCMC_omch2, sigma_8, MCMC_ns, MCMC_esc_PopIII, GPR_interpolator_PopII, MCMC_lambda_0): # GPR_interpolator_PopII
 		
 		
 		super(Redshift_Evolution, self).__init__(MCMC_H0, MCMC_ombh2, MCMC_omch2, sigma_8, MCMC_ns, GPR_interpolator_PopII, MCMC_esc_PopIII, MCMC_lambda_0, initial_call=True, zcoll=Z[0]) # GPR_interpolator_PopII

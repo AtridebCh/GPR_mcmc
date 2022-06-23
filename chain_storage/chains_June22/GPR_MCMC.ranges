@@ -4,4 +4,5 @@ epsilon_a2 0.0 1.0
 epsilon_a3 0.0 1.0
 epsilon_a4 0.0 1.0
 epsilon_a5 0.0 1.0
+lambda_0 0.0 1.0
 tau 0.05 0.1

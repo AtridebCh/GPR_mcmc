@@ -193,11 +193,11 @@ class Initialize(Inhomogenous_Reion, PopII_PopIII):
 
 
 
-
+'''
 	def set_escfrac(self):
 		escfrac['PopII']['HII'], escfrac['PopII']['HeII'], escfrac['PopII']['HeIII']= self.MCMC_esc_PopII, self.MCMC_esc_PopII, self.MCMC_esc_PopII
 		escfrac['PopIII']['HII'], escfrac['PopIII']['HeII'], escfrac['PopIII']['HeIII']= self.MCMC_esc_PopIII, self.MCMC_esc_PopIII, self.MCMC_esc_PopIII
 		return escfrac
-
+'''
 
 

@@ -1,0 +1,11 @@
+ cd/your project directory
+
+ 1) git init
+ 2) git add . or git add ['filename']
+ 3) git commit -m "My first File"
+ 4) git remote add origin https://github.com/yourusername/your-repo-name.git
+ 5) git push origin master
+
+The link is https://www.tutsmake.com/upload-project-files-on-github-using-command-line/
+
+For changing default brunch   https://stevenmortimer.com/5-steps-to-change-github-default-branch-from-master-to-main/

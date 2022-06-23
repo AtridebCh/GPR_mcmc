@@ -58,7 +58,7 @@ class CoreModule(object):
 			GPR_interpolator=self.gaussian_regress_process(esc_Pop_II_val, esc_PopII_redshift)
 			#print(GPR_interpolator.predict(Z[0].reshape(1,-1), return_std=True))
 			mean_prediction, std_prediction = GPR_interpolator.predict(Z.reshape(-1,1), return_std=True)
-			if single_run:
+			if self.single_run:
 				plt.scatter(esc_PopII_redshift, esc_Pop_II_val, label="Observations")
 				plt.plot(Z, mean_prediction, label="Mean prediction")
 				plt.legend()

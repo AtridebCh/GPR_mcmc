@@ -51,7 +51,7 @@ class MCMCsampler():
 	def startSampling(self):
 		for k in range(self.nwalkers):
 			f=open(self.chain_storage_path+'/'+self.file_root+ "_"+str(k+1)+".txt", "w+")
-			f.write('# Weight, Lnprob, different params\n')
+			f.write('# Weight, Lnprob, different params')
 			f.close()
 
 		pos = self.InitPosGenerator()

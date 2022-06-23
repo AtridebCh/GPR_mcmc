@@ -10,23 +10,23 @@ from utils import Params
 from Likelihood import Likelihood
 from CoredataGenerator import CoreModule
 
-Lymanlimitdatafile='/home/atrideb/parameter_estimation_reionization21cm_pop2/ObsData/Lyman_limit.dat'
-gammadatafile='/home/atrideb/parameter_estimation_reionization21cm_pop2/ObsData/gamma_data_all_combined.dat'
+Lymanlimitdatafile='/home/atrideb/reion_GPR/reion_21cm_code/ObsData/Lyman_limit.dat'
+gammadatafile='/home/atrideb/reion_GPR/reion_21cm_code/ObsData/gamma_data_all_combined.dat'
 
 Planck={'H0':67.70, 'ombh2': 0.0223, 'omch2': 0.12, 'sigma8':0.81, 'ns':0.96} 
-Astro_dict={'lambda_0':5.0, 'esc_pop_III':0.0}
+Astro_dict={'esc_pop_III':0.0}
 frac_size=0.001
 
-
+#init= 0.0036*np.random.rand(6)
 init=np.array([0.00263737, 0.00335895, 0.00196963, 0.00302385, 0.00173669, 0.00318811]) # produced using 0.0036*np.random.rand(6)
 params = Params(("epsilon_a0", [init[0], 0.0, 1.0, frac_size]),  #  #start  param_min param_max paramWidth
                 ("epsilon_a1", [init[1], 0.0, 1.0, frac_size]),
                 ("epsilon_a2", [init[2], 0.0, 1.0, frac_size]),
 				("epsilon_a3", [init[3], 0.0, 1.0, frac_size]),
 				("epsilon_a4", [init[4], 0.0, 1.0, frac_size]),
-				("epsilon_a5", [init[5], 0.0, 1.0, frac_size])
+				("epsilon_a5", [init[5], 0.0, 1.0, frac_size]),
+				("lambda_0",   [5.0, 0.0, 1.0, frac_size])
 				)
-
 
 print('params_value', params[:,0])
 
@@ -39,4 +39,4 @@ like.setup(gammadatafile, Lymanlimitdatafile)
 
 
 likelihood, blobs=like(params[:,0], single_run=True)
-print('likelihhod=%s, tau=%s' %(likelihood, blobs))
+print('likelihhod=%s, tau=%s, QHII_5point8=%s' %(likelihood, blobs))
