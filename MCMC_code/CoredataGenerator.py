@@ -58,31 +58,35 @@ class CoreModule(object):
 			GPR_interpolator=self.gaussian_regress_process(esc_Pop_II_val, esc_PopII_redshift)
 			#print(GPR_interpolator.predict(Z[0].reshape(1,-1), return_std=True))
 			mean_prediction, std_prediction = GPR_interpolator.predict(Z.reshape(-1,1), return_std=True)
+
 			if single_run:
 				plt.scatter(esc_PopII_redshift, esc_Pop_II_val, label="Observations")
 				plt.plot(Z, mean_prediction, label="Mean prediction")
 				plt.legend()
 				plt.show()
 
-			Redshift, QHII, tau, dnlldz, gamma_PI, QHII5point8=Redshift_Evolution(self.cosmodict['H0'], self.cosmodict['ombh2'], self.cosmodict['omch2'], self.cosmodict['sigma8'], self.cosmodict['ns'], 
+			if np.all(mean_prediction>0.0):
+				Redshift, QHII, tau, dnlldz, gamma_PI, QHII5point8=Redshift_Evolution(self.cosmodict['H0'], self.cosmodict['ombh2'], self.cosmodict['omch2'], self.cosmodict['sigma8'], self.cosmodict['ns'], 
  self.Astro_dict['esc_pop_III'], GPR_interpolator, Free_params['lambda_0']).quntity_for_MCMC()
 
 
-			ctx.add('Redshift', Redshift)
-			ctx.add('QHII_array', QHII)
-			ctx.add('opt_depth', tau)
-			ctx.add('Q_HII_at_Z5.8', QHII5point8)
-			ctx.add('lymanLimit', dnlldz)
-			ctx.add('Gamma_PI', gamma_PI)
+				ctx.add('Redshift', Redshift)
+				ctx.add('QHII_array', QHII)
+				ctx.add('opt_depth', tau)
+				ctx.add('Q_HII_at_Z5.8', QHII5point8)
+				ctx.add('lymanLimit', dnlldz)
+				ctx.add('Gamma_PI', gamma_PI)
 
-			return 1.0
+				return 1.0
+			else:
+				return 0.0
 
 		except:
 			raise  Exception("error either in assigning values in ctx or while computing some quantity from the model")
 
 
 	def gaussian_regress_process(self, esc_Pop_II_array, esc_PopII_redshift, n_restarts_optimizer=9 ):
-		kernel = 1 * RBF(length_scale=1.0, length_scale_bounds=(1e-2, 1e2))
+		kernel = 1 * RBF()
 		gaussian_process = GaussianProcessRegressor(kernel=kernel, n_restarts_optimizer=n_restarts_optimizer)
 		gaussian_process.fit(esc_PopII_redshift, esc_Pop_II_array)
 		return gaussian_process

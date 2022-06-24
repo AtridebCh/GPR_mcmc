@@ -39,4 +39,4 @@ like.setup(gammadatafile, Lymanlimitdatafile)
 
 
 likelihood, blobs=like(params[:,0], single_run=True)
-print('likelihhod=%s, tau=%s, QHII_5point8=%s' %(likelihood, blobs))
+print('likelihhod=%s, tau=%s, QHII_5point8=%s' %(likelihood, blobs[0], blobs[1]))

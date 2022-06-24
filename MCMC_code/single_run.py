@@ -17,8 +17,8 @@ Planck={'H0':67.70, 'ombh2': 0.0223, 'omch2': 0.12, 'sigma8':0.81, 'ns':0.96}
 Astro_dict={'esc_pop_III':0.0}
 frac_size=0.001
 
-#init= 0.0036*np.random.rand(6)
-init=np.array([0.00263737, 0.00335895, 0.00196963, 0.00302385, 0.00173669, 0.00318811]) # produced using 0.0036*np.random.rand(6)
+init= 0.0036*np.random.rand(6)
+#init=np.array([0.00263737, 0.00335895, 0.00196963, 0.00302385, 0.00173669, 0.00318811]) # produced using 0.0036*np.random.rand(6)
 params = Params(("epsilon_a0", [init[0], 0.0, 1.0, frac_size]),  #  #start  param_min param_max paramWidth
                 ("epsilon_a1", [init[1], 0.0, 1.0, frac_size]),
                 ("epsilon_a2", [init[2], 0.0, 1.0, frac_size]),

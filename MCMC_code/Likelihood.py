@@ -96,16 +96,16 @@ class Likelihood(object):
 		getLogger().debug("pid: %s, processing: %s"%(os.getpid(), p))
 		ctx = self.createChainContext(p)
 
-		if np.all(p[:-1]>0.0) and np.all(p[:-1]<1.0) :	
+		if np.all(p>0.0) and np.all(p[:-1]<1.0) :	
 			model=self.Core(ctx, single_run=single_run)
 			if model:
 				likelihood, tau, Q_HII_at_Z5point8=self.ComputeLikelihood(ctx, single_run=single_run) #blobs feature is used and you have to use array for this
 				blobs=np.array([tau, Q_HII_at_Z5point8])
 				return likelihood, blobs
 			else:
-				return -np.inf, [1.0, 1.0]
+				return -np.inf, [1.0, np.nan]
 		else:
-			return -np.inf, [1.0, 1.0]  #if len(blobs)>1 then use [1.0, 1.0]
+			return -np.inf, [1.0, np.nan]  #if len(blobs)>1 then use [1.0, 1.0]
 		
 			
 
