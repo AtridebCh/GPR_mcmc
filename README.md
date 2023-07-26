@@ -1,2 +1,2 @@
 # GPR_mcmc
-code related to Gaussia process regression project
+code related to Gaussian Regression Process
