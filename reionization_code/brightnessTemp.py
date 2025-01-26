@@ -22,7 +22,7 @@ sigmaT   =6.65e-29
 mpc_to_m=3.0*10**22
 mpc_to_cm=3.0*10**24
 boltzmann_constant=1.38*10**-23  #S.I
-lyalpha_pop2=1.13e61/(8e15)  #M_solar^{-1}/Hz
+lyalpha_pop2=1.13e61/(8e15)  #M_solar^{-1}/Hz; number of Ly-alpha photon from PopII stars using starburst99
 lyalpha_pop3=1.15e61/(8e15)  #M_solar^{-1}/Hz
 
 solar_mass_to_kg=2.0*10**30
@@ -35,19 +35,21 @@ class generating_21cm_signal:
 
 
 
-	def __init__(self,MCMC_H0, MCMC_ombh2, MCMC_omch2, f_X, f_alpha, redshift_EDGES, redshift_interpolate, pop2, QHII):
+	def __init__(self,MCMC_H0, MCMC_ombh2, MCMC_omch2, f_X, f_alpha, redshift_EDGES, SFRD_file, QHII_file): #redshift_EDGES is the redshift where you want to calculate the signal
 		self.h=MCMC_H0/100.0
 		self.omb=MCMC_ombh2/self.h**2
 		self.omega_m = (MCMC_ombh2+MCMC_omch2)/self.h**2
-		self.f_R_2=0.0
-		self.f_X_2=f_X
-		self.f_alpha_2=f_alpha
-		self.redshift_array=redshift_interpolate
+		self.f_R_2=0.0 #radio efficiency from PopII star. use zero for now
+		self.f_X_2=f_X # X-ray efficiency, one can use 0.2
+		self.f_alpha_2=f_alpha #Ly-alpha efficiency one can take 0.1
+		self.redshift_array, self.pop2 = np.loadtxt(SFRD_file, unpack = True) #SFRD file contains two columns z, SFRD(solar_mass/yr/mpc^3)
+		_, QHII = np.loadtxt(QHII_file, unpack = True) #QHII file contains two columns z, QHII
 		self.pop2_sfrd=sp.interpolate.interp1d(self.redshift_array, pop2) #solar_mass/yr/mpc^3
-		self.QHII=sp.interpolate.interp1d(self.redshift_array, QHII)
+		_, self.QHII=sp.interpolate.interp1d(self.redshift_array, QHII)
 		self.redshift_edges=redshift_EDGES
 		self.number_density_hydrogen=2.0*10**-1*(MCMC_ombh2/0.022)*(1-Y_He) 
 		self.QHII=self.QHII(self.redshift_edges)
+		
 	def Hubble(self,z):
 		H_0=100.0*self.h
 		omegaR=0.0
@@ -58,13 +60,11 @@ class generating_21cm_signal:
 	def integrand_for_radio(self,z_prime,z):
 		return self.f_R_2*self.pop2_sfrd(z_prime)/((1+z_prime)**2.1*self.Hubble(z_prime)*(mpc_to_m)**3)
 
-
-
-
 	def integrand_for_lyalpha(self,z_prime):
 		return self.f_alpha_2*lyalpha_pop2*self.pop2_sfrd(z_prime)/((1+z_prime)*365*24*3600*self.Hubble(z_prime))
 		#f_alpha_2*lyalpha_pop2*pop2_sfrd should have an unit of mpc^{-3}sec{-1}Hz{-1}, Now pop2_sfrd already have an unit of 
-		# M_solar/mpc^3/yr and lyalpha_pop2 have an unit of M_solar{-1}Hz{-1}, so all good and divide the whole thing by (365*24*3600) to convert yr to sec, other wise J_alpha will be in year not in sec.
+		#M_solar/mpc^3/yr and lyalpha_pop2 have an unit of M_solar{-1}Hz{-1}, so all good and divide the whole thing by (365*24*3600) to convert yr to sec, other wise J_alpha will be in year not in sec.
+	
 	def J_alpha(self,Z):
 		z_init = Z[0]
 		lyphoton=np.zeros(len(Z))
@@ -112,10 +112,10 @@ class generating_21cm_signal:
 			T_s = (T_bg * T_k[count] * (1 + x_alpha_1[count]) ) / (T_k[count] + x_alpha_1[count] * T_bg)
 		    #print(z, T_bg, T_k[count], T_s)
 			if (T_s < 1.e-8):
-		        #T_b = 1000.0 * (T_s - T_bg) / (1 + z)
+		        	#T_b = 1000.0 * (T_s - T_bg) / (1 + z)
 				T_b=1000.0*(T_s-T_bg)/(1+z)*(1-np.exp(-0.0092*(1+z)**1.5/T_s))*(1-self.QHII[count])
 			else:
-		        #T_b = 1000.0 * (T_s - T_bg) / (1 + z) * ( 1 - np.exp(-0.0092 * (1 + z) ** 1.5 / T_s) )
+		        	#T_b = 1000.0 * (T_s - T_bg) / (1 + z) * ( 1 - np.exp(-0.0092 * (1 + z) ** 1.5 / T_s) )
 				T_b=1000.0*(T_s-T_bg)/(1+z)*(1-np.exp(-0.0092*(1+z)**1.5/T_s))*(1-self.QHII[count])
 			T_Bright[count]=T_b
 			#T_S[count]=T_s-T_bg
