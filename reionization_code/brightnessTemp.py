@@ -40,8 +40,8 @@ class generating_21cm_signal:
 		self.omb=MCMC_ombh2/self.h**2
 		self.omega_m = (MCMC_ombh2+MCMC_omch2)/self.h**2
 		self.f_R_2=0.0 #radio efficiency from PopII star. use zero for now
-		self.f_X_2=f_X # X-ray efficiency, one can use 0.2
-		self.f_alpha_2=f_alpha #Ly-alpha efficiency one can take 0.1
+		self.f_X_2=f_X # X-ray efficiency, one can use 0.2, Furlanetto;06
+		self.f_alpha_2=f_alpha #Ly-alpha efficiency one can take 0.1, Chatterjee, 24
 		self.redshift_array, self.pop2 = np.loadtxt(SFRD_file, unpack = True) #SFRD file contains two columns z, SFRD(solar_mass/yr/mpc^3)
 		_, QHII = np.loadtxt(QHII_file, unpack = True) #QHII file contains two columns z, QHII
 		self.pop2_sfrd=sp.interpolate.interp1d(self.redshift_array, pop2) #solar_mass/yr/mpc^3
@@ -78,27 +78,21 @@ class generating_21cm_signal:
 	def x_alpha(self,z):
 		return 1.81*self.J_alpha(z)*(1+z)**-1*10**11
 
-	def func(self,z,T_k):
-		dT_kdz=2.0*T_k/(1.0+z)-2.0/3.0*self.f_X_2*3.4*(10**33)*self.pop2_sfrd(z)/(boltzmann_constant*(1+z)*self.number_density_hydrogen*(mpc_to_m)**3*self.Hubble(z))
+	def func(self,z,T_k): #add PBH heating inside this function, in this code, I take only X-ray heating
+		dT_kdz=2.0*T_k/(1.0+z)-2.0/3.0*self.f_X_2*3.4*(10**33)*self.pop2_sfrd(z)/(boltzmann_constant*(1+z)*self.number_density_hydrogen*(mpc_to_m)**3*self.Hubble(z)) #Furlanetto, 06; 
 		return dT_kdz
 
-		
 	def background_temp(self,z,z_init):
 		sol,err=sp.integrate.quad(self.integrand_for_radio,z_init,z,args=(z,),epsabs=1.49e-03,epsrel=1.49e-03)
 		T_R=-10**22*(142.0/15.0)**-1.1*(1+z)**(3.0-spectral_index)*(cLight)**3/(4*np.pi)*(1.0/(2.0*boltzmann_constant*(1420*10**6)**2))*sol
 		T_background=2.73*(1+z)+T_R
 		return T_background	
 		
-
 	def signal_generator(self):
-
 		z_init=self.redshift_edges[0]
 		z_eor=self.redshift_edges[-1]
 		
-		
 		T_Bright=np.zeros(len(self.redshift_edges))
-		#T_S=np.zeros(len(self.redshift_edges))
-		
 		T_k0=[(1+z_init)**2/(1+50.0)**2*50.0]
 		
 		sol =solve_ivp(lambda z, T_k: self.func(z,T_k),(z_init,z_eor),T_k0,'BDF',t_eval=self.redshift_edges, first_step=(z_init-z_eor))
@@ -110,7 +104,7 @@ class generating_21cm_signal:
 		for count,z in enumerate(self.redshift_edges):
 			T_bg = self.background_temp(z,z_init)
 			T_s = (T_bg * T_k[count] * (1 + x_alpha_1[count]) ) / (T_k[count] + x_alpha_1[count] * T_bg)
-		    #print(z, T_bg, T_k[count], T_s)
+		        #print(z, T_bg, T_k[count], T_s)
 			if (T_s < 1.e-8):
 		        	#T_b = 1000.0 * (T_s - T_bg) / (1 + z)
 				T_b=1000.0*(T_s-T_bg)/(1+z)*(1-np.exp(-0.0092*(1+z)**1.5/T_s))*(1-self.QHII[count])
@@ -119,8 +113,8 @@ class generating_21cm_signal:
 				T_b=1000.0*(T_s-T_bg)/(1+z)*(1-np.exp(-0.0092*(1+z)**1.5/T_s))*(1-self.QHII[count])
 			T_Bright[count]=T_b
 			#T_S[count]=T_s-T_bg
-		    #T_radio[count]=T_bg-2.73*(1+z)
-		    #print(z, T_b, T_k[count], T_s, T_bg, x_alpha_1[count])
+		        #T_radio[count]=T_bg-2.73*(1+z)
+		        #print(z, T_b, T_k[count], T_s, T_bg, x_alpha_1[count])
 		return T_Bright
 
 '''
