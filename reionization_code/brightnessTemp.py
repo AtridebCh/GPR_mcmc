@@ -78,7 +78,7 @@ class generating_21cm_signal:
 	def x_alpha(self,z):
 		return 1.81*self.J_alpha(z)*(1+z)**-1*10**11
 
-	def func(self,z,T_k): #add PBH heating inside this function, in this code, I take only X-ray heating
+	def dT_kdz_eqn(self,z,T_k): #add PBH heating inside this function, in this code, I take only X-ray heating
 		dT_kdz=2.0*T_k/(1.0+z)-2.0/3.0*self.f_X_2*3.4*(10**33)*self.pop2_sfrd(z)/(boltzmann_constant*(1+z)*self.number_density_hydrogen*(mpc_to_m)**3*self.Hubble(z)) #Furlanetto, 06; 
 		return dT_kdz
 
@@ -95,7 +95,7 @@ class generating_21cm_signal:
 		T_Bright=np.zeros(len(self.redshift_edges))
 		T_k0=[(1+z_init)**2/(1+50.0)**2*50.0]
 		
-		sol =solve_ivp(lambda z, T_k: self.func(z,T_k),(z_init,z_eor),T_k0,'BDF',t_eval=self.redshift_edges, first_step=(z_init-z_eor))
+		sol =solve_ivp(lambda z, T_k: self.dT_kdz_eqn(z,T_k),(z_init,z_eor),T_k0,'BDF',t_eval=self.redshift_edges, first_step=(z_init-z_eor))
 		T_k=sol.y[0]
 		if (np.any(T_k > 1.e8)): return T_Bright - 1.e8
 		
